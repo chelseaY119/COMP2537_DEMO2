@@ -127,6 +127,9 @@ app.post('/submitSignup', async (req, res) => {
 
     // var html = "successfully created user";
     // res.send(html);
+    // Create session and redirect to members page
+    req.session.authenticated = true;
+    req.session.username = username;
     res.redirect('/members');
 
 });
