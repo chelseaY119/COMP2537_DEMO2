@@ -2,16 +2,44 @@
     <h2>
         <%= user.username%>
     </h2>
-    <%= user_type %>
+    <%= user.userType %>
 
-    <button class="promotetoadmin" type="submit" onClick="demoteUser('<%= user.username %>')">
+    <button class="promotetoadmin" type="submit" onClick="promoteUser('<%= user.username %>')">
         <%= buttonText1 %>
     </button>
 
     <br>
 
-    <button class="demotetoadmin" type="submit" onClick="promoteUser('<%= user.username %>')">
+    <button class="demotetoadmin" type="submit" onClick="demoteUser('<%= user.username %>')">
         <%= buttonText2 %>
     </button>
 
 </li>
+
+<script>
+function promoteUser(username) {
+//   console.log('start');
+  const formData = new URLSearchParams();
+  formData.append('username', username);
+  formData.append('userType', 'admin');
+
+  fetch('/updateUserType', {
+    method: 'POST',
+    body: formData
+  })
+}
+
+function demoteUser(username) {
+//   console.log('start');
+  const formData = new URLSearchParams();
+  formData.append('username', username);
+  formData.append('userType', 'user');
+
+  fetch('/updateUserType', {
+    method: 'POST',
+    body: formData
+  })
+}
+
+</script>
+  

@@ -1,40 +1,13 @@
 <%- include("templates/header") %>
-<br>
 
-    <% if(!req.session.authenticated) { %>
 
-        <h1>
-            <%= pageTitle %>
-        </h1>
-        <form action="/signup">
-            <button type="submit">
-                <%= buttonText1 %>
-            </button>
-        </form>
-        <br>
-        <form action="/login">
-            <button type="submit">
-                <%= buttonText2 %>
-            </button>
-        </form>
+<% if(!req.session.authenticated) { %>
+    <h1>ok1</h1>
+    <% include('templates/home', { isLogin: false, buttonText1: 'Sign up', buttonText2: 'Log in' }) %>
+<% } else { %>
+    <h1>ok2</h1>
+    <% include('templates/h', { isLogin: true, buttonText1: 'Go to members area', buttonText2: 'Log out' }) %>
+<% } %>
 
-        <% } else { %>
-            <h1>
-                <%= pageTitle %>
-                <%= username %>
-            </h1>
-            <form action="/members">
-                <button type="submit">
-                    <%= buttonText1 %>
-                </button>
-            </form>
-            <br>
-            <form action="/logout">
-                <button type="submit">
-                    <%= buttonText2 %>
-                </button>
-            </form>
-            <% } %>
-
-<br>
+                      
 <%- include("templates/footer") %>

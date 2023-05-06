@@ -1,0 +1,28 @@
+<%- include("templates/header") %>
+
+<div class="container" style="margin: 2%;">
+    
+    <h1>Hello! <%= req.session.username %></h1>
+    <h3>Here are some cute cat pictures for you 😻 !</h3>
+
+    <div class="row">
+        <% images.forEach((img) => { %>
+        <div class="col-md-6 col-lg-4">
+            <div class="card">
+                <img src="<%= img %>" class="card-img-top" alt="Random Image">
+                <div class="card-body">
+                    <!-- Card content here -->
+                </div>
+            </div>
+        </div>
+        <% }) %>
+    </div>
+
+    <form action="/logout">
+        
+        <button type="submit" class="btn btn-dark">Log out</button>
+    </form>
+    <br>
+</div>
+
+<%- include("templates/footer") %>

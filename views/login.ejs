@@ -1,15 +1,17 @@
 <%- include("templates/header") %>
-    <br>
-    <h1>
+
+    <br> <br>
+    <!-- <h1>
         <%= pageTitle %>
-    </h1>
+    </h1> -->
+    <% if (pageTitle === 'Login') { %>
+        <%- include('templates/form', { action: '/submitLogin' , showNameField: false }) %>
+        <% } %>
 
-    <form action='/submitLogin' method='post'>
-        <input name='email' type='email' placeholder='email'>
-        <input name='password' type='password' placeholder='password'>
-        <button>Submit</button>
-    </form>
+        <% if (pageTitle === 'Sign Up') { %>
+            <%- include('templates/form', { action: '/submitSignup' , showNameField: true }) %>
+            <% } %>
 
-    <br>
+            <br> <br>
 
-    <%- include("templates/footer") %>
+            <%- include("templates/footer") %>

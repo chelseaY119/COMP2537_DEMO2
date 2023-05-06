@@ -25,6 +25,7 @@ const node_session_secret = process.env.NODE_SESSION_SECRET;
 var { database } = include('databaseConnection');
 
 const userCollection = database.db(mongodb_database).collection('users');
+const adminCollection = database.db(mongodb_database).collection('admin');
 
 app.set('view engine', 'ejs');
 
@@ -68,7 +69,7 @@ app.get('/', (req, res) => {
 
 //sign up page
 app.get('/signup', (req, res) => {
-    res.render("signup", {
+    res.render("login", {
         // req: req,
         pageTitle: 'Sign Up',
     });
@@ -80,6 +81,7 @@ app.post('/submitSignup', async (req, res) => {
     var username = req.body.username;
     var password = req.body.password;
     var email = req.body.email;
+    var usertype = 'user';
 
     const schema = Joi.object(
         {
@@ -110,7 +112,7 @@ app.post('/submitSignup', async (req, res) => {
 
     var hashedPassword = await bcrypt.hash(password, saltRounds);
 
-    await userCollection.insertOne({ username: username, password: hashedPassword, email: email });
+    await userCollection.insertOne({ username: username, password: hashedPassword, email: email, userType: usertype });
     console.log("Inserted user");
 
     // var html = "successfully created user";
@@ -157,10 +159,13 @@ app.post('/submitLogin', async (req, res) => {
         return;
     }
 
-    const result = await userCollection.find({ email: email }).project({ email: 1, password: 1, _id: 1, username: 1 }).toArray();
+    const userresult = await userCollection.find({ email: email }).project({ email: 1, password: 1, _id: 1, username: 1 }).toArray();
+    const adminresult = await adminCollection.find({ email: email }).project({ email: 1, password: 1, _id: 1, username: 1 }).toArray();
 
-    console.log(result);
-    if (result.length != 1) {
+    console.log(userresult);
+    console.log(adminresult);
+    // console.log(result);
+    if (userresult.length === 0 && adminresult.length === 0) {
         var html = `
         <div>User not found</div>
         <br>
@@ -170,8 +175,13 @@ app.post('/submitLogin', async (req, res) => {
         return;
     }
 
-    const user = result[0];
-    if (await bcrypt.compare(password, result[0].password)) {
+    if (userresult.length === 1) {
+        user = userresult[0];
+    } else {
+        user = adminresult[0];
+    }
+
+    if (await bcrypt.compare(password, user.password)) {
         console.log("correct password");
         req.session.authenticated = true;
         req.session.username = user.username;
@@ -195,9 +205,13 @@ app.post('/submitLogin', async (req, res) => {
 
 app.use(express.static(__dirname + "/public"));
 
+
 //admin page
 app.get('/admin', async (req, res) => {
+
+    const admin = await adminCollection.find().toArray();
     const users = await userCollection.find().toArray();
+
     if (!req.session.authenticated) {
         res.render('index', {
             req: req,
@@ -205,20 +219,77 @@ app.get('/admin', async (req, res) => {
             buttonText1: 'Sign up',
             buttonText2: 'Log in'
         });
-    } else {
-        res.render('admin', {
-            req: req,
-            users: users,
-            isAdmin: false
+
+
+    }
+
+    const username = req.session.username;
+    console.log(username);
+
+    const user = await userCollection.findOne({ username });
+
+    if(user && user.userType === 'user')  {
+        res.render("404", {
+            pageTitle: '403'
         });
     }
 
+     else {
+        res.render('admin', {
+            req: req,
+            // userCollection: userCollection,
+            users: users,
+            admins: admin
+        });
+
+
+
+
+    };
 });
 
-// app.post("/promotetoadmin"), async (req, res) => {
-//     const user = req.body.username;
-//     db.getCollection("users").updateOne({ username: user }, { $set: { user_type: 'admin' } })
-// }
+app.post('/updateUserType', async (req, res) => {
+    const body = req.body;
+    const username = body.username;
+    const userType = body.userType;
+
+    try {
+        const userDocument = await userCollection.findOne({ username });
+        if (userDocument) {
+            await userCollection.updateOne(
+                { username },
+                { $set: { userType: userType } }
+            )
+        }
+
+        else if (!userDocument) {
+            await adminCollection.updateOne(
+                { username },
+                { $set: { userType: userType } }
+            )
+        };
+
+        if (userType === 'admin') {
+            const userDocument = await userCollection.findOne({ username });
+            if (userDocument) {
+                await adminCollection.insertOne(userDocument);
+                await userCollection.deleteOne({ username });
+            }
+        } else if (userType === 'user') {
+            const adminDocument = await adminCollection.findOne({ username });
+            if (adminDocument) {
+                await userCollection.insertOne(adminDocument);
+                await adminCollection.deleteOne({ username });
+            }
+        }
+
+        console.log('User type updated and document moved successfully.');
+    } catch (error) {
+        console.error('Error updating user type and moving document:', error);
+        res.status(500).json({ success: false, message: 'An error occurred while updating user type and moving document.' });
+    }
+});
+
 
 
 
@@ -235,23 +306,17 @@ app.get('/members', (req, res) => {
     }
 
     const images = [
-        "/tutu.jpg",
+        "/fluffy.gif",
         "/tutu1.jpg",
-        "/tutu3.jpg",
+        "/socks.gif",
     ];
 
-    const index = Math.floor(Math.random() * images.length);
-    const selectedImage = images[index];
+  
 
-    var html = `
-    <h1>Hello! ${req.session.username}</h1>
-    <img src="${selectedImage}" alt="Random Image" width="380" height="500">
-    <form action="/logout">
-    <br>
-    <button type="submit">Log out</button>
-    </form>
-    `;
-    res.send(html);
+    res.render("member", {
+        req:req,
+        images: images
+    });
 
 });
 
@@ -262,7 +327,9 @@ app.get('/logout', (req, res) => {
 
 app.get("*", (req, res) => {
     res.status(404);
-    res.render("404");
+    res.render("404", {
+        pageTitle: '404'
+    });
 })
 
 app.listen(port, () => {
