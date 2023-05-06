@@ -1,0 +1,40 @@
+<%- include("templates/header") %>
+<br>
+
+    <% if(!req.session.authenticated) { %>
+
+        <h1>
+            <%= pageTitle %>
+        </h1>
+        <form action="/signup">
+            <button type="submit">
+                <%= buttonText1 %>
+            </button>
+        </form>
+        <br>
+        <form action="/login">
+            <button type="submit">
+                <%= buttonText2 %>
+            </button>
+        </form>
+
+        <% } else { %>
+            <h1>
+                <%= pageTitle %>
+                <%= username %>
+            </h1>
+            <form action="/members">
+                <button type="submit">
+                    <%= buttonText1 %>
+                </button>
+            </form>
+            <br>
+            <form action="/logout">
+                <button type="submit">
+                    <%= buttonText2 %>
+                </button>
+            </form>
+            <% } %>
+
+<br>
+<%- include("templates/footer") %>

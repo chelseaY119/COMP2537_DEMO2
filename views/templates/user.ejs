@@ -1,0 +1,17 @@
+<li>
+    <h2>
+        <%= user.username%>
+    </h2>
+    <%= user_type %>
+
+    <button class="promotetoadmin" type="submit" onClick="demoteUser('<%= user.username %>')">
+        <%= buttonText1 %>
+    </button>
+
+    <br>
+
+    <button class="demotetoadmin" type="submit" onClick="promoteUser('<%= user.username %>')">
+        <%= buttonText2 %>
+    </button>
+
+</li>
