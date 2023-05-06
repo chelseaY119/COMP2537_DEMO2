@@ -13,7 +13,6 @@ const app = express();
 
 const Joi = require("joi");
 
-//Users and Passwords (in memory 'database')
 const expireTime = 60 * 60 * 1000;
 
 const mongodb_host = process.env.MONGODB_HOST;
@@ -27,11 +26,13 @@ var { database } = include('databaseConnection');
 
 const userCollection = database.db(mongodb_database).collection('users');
 
+app.set('view engine', 'ejs');
+
 app.use(express.urlencoded({ extended: false }));
 
 var mongoStore = MongoStore.create({
     // mongoUrl: `mongodb+srv://${mongodb_user}:${mongodb_password}@cluster0.aidihud.mongodb.net/sessions`,
-    mongoUrl: `mongodb+srv://${mongodb_user}:${mongodb_password}@${mongodb_host}/sessions`,
+    mongoUrl: `mongodb+srv://${mongodb_user}:${mongodb_password}@${mongodb_host}/a2`,
     crypto: {
         secret: mongodb_session_secret
     }
@@ -48,42 +49,29 @@ app.use(session({
 //home page 
 app.get('/', (req, res) => {
     if (!req.session.authenticated) {
-        res.send(`
-            <h1>Home</h1>
-            <form action="/signup">
-                <button type="submit">Sign up</button>
-            </form>
-            <form action="/login">
-                <button type="submit">Log in</button>
-            </form>
-        `);
+        res.render('index', {
+            req: req,
+            pageTitle: 'Home',
+            buttonText1: 'Sign up',
+            buttonText2: 'Log in'
+        });
     } else {
-        var html = `
-        <h1>Hello! ${req.session.username}</h1>
-        <br>
-        <form action="/members">
-            <button type="submit">Go to members area</button>
-        </form>
-        <form action="/logout">
-            <button type="submit">Log out</button>
-        </form>
-        `;
-        res.send(html);
+        res.render('index', {
+            req: req,
+            pageTitle: 'Hello! ',
+            username: req.session.username,
+            buttonText1: 'Go to members area',
+            buttonText2: 'Log out'
+        });
     }
 });
 
 //sign up page
 app.get('/signup', (req, res) => {
-    var html = `
-    sign up
-    <form action='/submitSignup' method='post'>
-    <input name='username' type='text' placeholder='name'>
-    <input name='email' type='email' placeholder='email'>
-    <input name='password' type='password' placeholder='password'>
-    <button>Submit</button>
-    </form>
-    `;
-    res.send(html);
+    res.render("signup", {
+        // req: req,
+        pageTitle: 'Sign Up',
+    });
 });
 
 app.post('/submitSignup', async (req, res) => {
@@ -136,15 +124,9 @@ app.post('/submitSignup', async (req, res) => {
 
 //login page
 app.get('/login', (req, res) => {
-    var html = `
-    log in
-    <form action='/submitLogin' method='post'>
-    <input name='email' type='email' placeholder='email'>
-    <input name='password' type='password' placeholder='password'>
-    <button>Submit</button>
-    </form>
-    `;
-    res.send(html);
+    res.render("login", {
+        pageTitle: 'Login'
+    })
 });
 
 app.post('/submitLogin', async (req, res) => {
@@ -213,6 +195,39 @@ app.post('/submitLogin', async (req, res) => {
 
 app.use(express.static(__dirname + "/public"));
 
+//admin page
+app.get('/admin', async (req, res) => {
+    const users = await userCollection.find().toArray();
+    if (!req.session.authenticated) {
+        res.render('index', {
+            req: req,
+            pageTitle: 'Home',
+            buttonText1: 'Sign up',
+            buttonText2: 'Log in'
+        });
+    } else {
+        res.render('admin', {
+            req: req,
+            users: users,
+            isAdmin: false
+        });
+    }
+
+});
+
+// app.post("/promotetoadmin"), async (req, res) => {
+//     const user = req.body.username;
+//     db.getCollection("users").updateOne({ username: user }, { $set: { user_type: 'admin' } })
+// }
+
+
+
+
+
+
+
+
+
 //members page
 app.get('/members', (req, res) => {
     if (!req.session.authenticated) {
@@ -241,17 +256,13 @@ app.get('/members', (req, res) => {
 });
 
 app.get('/logout', (req, res) => {
-    // Clear the session object
     req.session.destroy();
-
-    // Redirect the user to the login page
     res.redirect('/');
 });
 
-
 app.get("*", (req, res) => {
     res.status(404);
-    res.send("Page not found - 404");
+    res.render("404");
 })
 
 app.listen(port, () => {
