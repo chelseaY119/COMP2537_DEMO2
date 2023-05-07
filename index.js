@@ -54,7 +54,8 @@ app.get('/', (req, res) => {
             req: req,
             pageTitle: 'Home',
             buttonText1: 'Sign up',
-            buttonText2: 'Log in'
+            buttonText2: 'Log in',
+            activePage: 'home'
         });
     } else {
         res.render('index', {
@@ -62,7 +63,8 @@ app.get('/', (req, res) => {
             pageTitle: 'Hello! ',
             username: req.session.username,
             buttonText1: 'Go to members area',
-            buttonText2: 'Log out'
+            buttonText2: 'Log out',
+            activePage: 'home'
         });
     }
 });
@@ -72,6 +74,7 @@ app.get('/signup', (req, res) => {
     res.render("login", {
         // req: req,
         pageTitle: 'Sign Up',
+        activePage: 'login'
     });
 });
 
@@ -109,15 +112,11 @@ app.post('/submitSignup', async (req, res) => {
         return;
 
     }
-
     var hashedPassword = await bcrypt.hash(password, saltRounds);
 
     await userCollection.insertOne({ username: username, password: hashedPassword, email: email, userType: usertype });
     console.log("Inserted user");
 
-    // var html = "successfully created user";
-    // res.send(html);
-    // Create session and redirect to members page
     req.session.authenticated = true;
     req.session.username = username;
     res.redirect('/members');
@@ -127,7 +126,8 @@ app.post('/submitSignup', async (req, res) => {
 //login page
 app.get('/login', (req, res) => {
     res.render("login", {
-        pageTitle: 'Login'
+        pageTitle: 'Login',
+        activePage: 'login'
     })
 });
 
@@ -205,7 +205,6 @@ app.post('/submitLogin', async (req, res) => {
 
 app.use(express.static(__dirname + "/public"));
 
-
 //admin page
 app.get('/admin', async (req, res) => {
 
@@ -217,9 +216,9 @@ app.get('/admin', async (req, res) => {
             req: req,
             pageTitle: 'Home',
             buttonText1: 'Sign up',
-            buttonText2: 'Log in'
+            buttonText2: 'Log in',
+            activePage: 'home'
         });
-
 
     }
 
@@ -230,7 +229,8 @@ app.get('/admin', async (req, res) => {
 
     if(user && user.userType === 'user')  {
         res.render("404", {
-            pageTitle: '403'
+            pageTitle: '403',
+            activePage: '404'
         });
     }
 
@@ -239,7 +239,8 @@ app.get('/admin', async (req, res) => {
             req: req,
             // userCollection: userCollection,
             users: users,
-            admins: admin
+            admins: admin,
+            activePage: 'admin'
         });
 
 
@@ -290,15 +291,6 @@ app.post('/updateUserType', async (req, res) => {
     }
 });
 
-
-
-
-
-
-
-
-
-
 //members page
 app.get('/members', (req, res) => {
     if (!req.session.authenticated) {
@@ -311,11 +303,10 @@ app.get('/members', (req, res) => {
         "/socks.gif",
     ];
 
-  
-
     res.render("member", {
         req:req,
-        images: images
+        images: images,
+        activePage:'members'
     });
 
 });

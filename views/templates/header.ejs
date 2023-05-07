@@ -11,44 +11,77 @@
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <!-- <nav class="navbar navbar-expand-lg navbar-light bg-light" >
     
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
       
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-          <ul class="navbar-nav mr-auto">
+        <div class="collapse navbar-collapse" id="navbarSupportedContent" style="margin: 1%" >
+          <ul class="navbar-nav mr-auto" >
             <li class="nav-item active">
-              <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
+              <a class="nav-link" href="/" style="color:#334453">Home <span class="sr-only">(current)</span></a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#">Cats</a>
-            </li>
-            <!-- <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Dropdown
-              </a>
-              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                <a class="dropdown-item" href="#">Action</a>
-                <a class="dropdown-item" href="#">Another action</a>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="#">Something else here</a>
-              </div>
-            </li> -->
-            <li class="nav-item">
-              <a class="nav-link disabled" href="/login">Login</a>
+              <a class="nav-link" href="/members" style="color:#334453">Members</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link disabled" href="/admin">Admin</a>
+              <a class="nav-link disabled" href="/login" style="color:#334453">Login</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link disabled" href="/404">404</a>
+              <a class="nav-link disabled" href="/admin" style="color:#334453">Admin</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link disabled" href="/404" style="color:#334453">404</a>
             </li>
           </ul>
-          <!-- <form class="form-inline my-2 my-lg-0">
-            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-          </form> -->
+        </div>
+      </nav> -->
+
+      <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+      
+        <div class="collapse navbar-collapse" id="navbarSupportedContent" style="margin: 1%;">
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item <%= activePage === 'home' ? 'active' : '' %>">
+              <a class="nav-link" href="/">
+                <span class="nav-link-text <%= activePage === 'home' ? 'active' : '' %>">Home</span>
+              </a>
+            </li>
+            <li class="nav-item <%= activePage === 'members' ? 'active' : '' %>">
+              <a class="nav-link" href="/members">
+                <span class="nav-link-text <%= activePage === 'members' ? 'active' : '' %>">Members</span>
+              </a>
+            </li>
+            <li class="nav-item <%= activePage === 'login' ? 'active' : '' %>">
+              <a class="nav-link" href="/login">
+                <span class="nav-link-text <%= activePage === 'login' ? 'active' : '' %>">Login</span>
+              </a>
+            </li>
+            <li class="nav-item <%= activePage === 'admin' ? 'active' : '' %>">
+              <a class="nav-link" href="/admin">
+                <span class="nav-link-text <%= activePage === 'admin' ? 'active' : '' %>">Admin</span>
+              </a>
+            </li>
+            <li class="nav-item <%= activePage === '404' ? 'active' : '' %>">
+              <a class="nav-link" href="/404">
+                <span class="nav-link-text <%= activePage === '404' ? 'active' : '' %>">404</span>
+              </a>
+            </li>
+          </ul>
         </div>
       </nav>
+
+      <style>
+      .active .nav-link-text {
+        padding: 0.5rem;
+        background-color: #334453;
+        color: white;
+      }
+    </style>
+      
+      
+      

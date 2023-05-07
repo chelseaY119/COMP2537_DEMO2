@@ -1,5 +1,11 @@
-<%- include("templates/header") %>
 
+<%- include("templates/header") %>
+<div style="height: 74vh; margin: 3%">
+
+    <div style="margin: 2%">
+        <h2>Users</h2>
+    </div>
+  
 <% admins.forEach((admin)=> { %>
     <br>
     <%- include('templates/user', { user: admin, buttonText1: 'Promote to Admin' , buttonText2: 'Demote to User' }) 
@@ -12,5 +18,5 @@
             %>
             <% }) %>
 
- 
+        </div>
 <%- include("templates/footer") %>

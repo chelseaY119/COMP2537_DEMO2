@@ -1,0 +1,42 @@
+<div class="d-flex justify-content-center align-items-center" style="height: 80vh;">
+  <div class="btn-group">
+    <% if(!isLogin) { %>
+      <div class="d-flex justify-content-center align-items-center flex-column">
+        <h1>Welcome!</h1>
+        <form action="/signup">
+          <button type="submit" class="btn btn-dark btn-lg">
+            <%= buttonText1 %>
+          </button>
+        </form>
+
+        <div style="margin: 10px;"></div>
+        <form action="/login">
+          <button type="submit" class="btn btn-dark btn-lg">
+            <%= buttonText2 %>
+          </button>
+        </form>
+      </div>
+      <% } else { %>
+        <div class="d-flex justify-content-center align-items-center flex-column">
+          <h1>Hello! <%= req.session.username %>
+          </h1>
+
+          <div class="text-center mt-4">
+            <form action="/members">
+              <button type="submit" class="btn btn-dark btn-lg">
+                <%= buttonText1 %>
+              </button>
+            </form>
+            <div class="my-2"></div>
+            <form action="/logout">
+              <button type="submit" class="btn btn-dark btn-lg">
+                <%= buttonText2 %>
+              </button>
+            </form>
+          </div>
+        </div>
+        <% } %>
+
+
+  </div>
+</div>

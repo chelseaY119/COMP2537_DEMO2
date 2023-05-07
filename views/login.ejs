@@ -1,17 +1,15 @@
 <%- include("templates/header") %>
 
-    <br> <br>
-    <!-- <h1>
+    <div style="height: 90vh">
+        <!-- <h1>
         <%= pageTitle %>
     </h1> -->
-    <% if (pageTitle === 'Login') { %>
-        <%- include('templates/form', { action: '/submitLogin' , showNameField: false }) %>
-        <% } %>
+        <% if (pageTitle==='Login' ) { %>
+            <%- include('templates/form', { action: '/submitLogin' , showNameField: false }) %>
+                <% } %>
 
-        <% if (pageTitle === 'Sign Up') { %>
-            <%- include('templates/form', { action: '/submitSignup' , showNameField: true }) %>
-            <% } %>
-
-            <br> <br>
-
-            <%- include("templates/footer") %>
+                    <% if (pageTitle==='Sign Up' ) { %>
+                        <%- include('templates/form', { action: '/submitSignup' , showNameField: true }) %>
+                            <% } %>
+    </div>
+    <%- include("templates/footer") %>

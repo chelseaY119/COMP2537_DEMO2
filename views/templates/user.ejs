@@ -1,45 +1,48 @@
-<li>
-    <h2>
-        <%= user.username%>
-    </h2>
-    <%= user.userType %>
+<div class="d-flex justify-content-left align-items-left">
+  <div class="btn-group" style="display: flex; align-items: center;">
 
-    <button class="promotetoadmin" type="submit" onClick="promoteUser('<%= user.username %>')">
-        <%= buttonText1 %>
+    <h style="font-size: 30px; display: inline-block; margin-right: 10px;">
+      <%= user.username %> <span style="font-size: 20px; vertical-align: middle;"> <%= user.userType %></span>
+    </h>
+
+    <button class="btn btn-dark btn-lg btn-rounded" type="submit"
+      style="margin: 2%; font-size:14px; padding:2%; height: 40px" onClick="promoteUser('<%= user.username %>')">
+      <%= buttonText1 %>
     </button>
 
-    <br>
-
-    <button class="demotetoadmin" type="submit" onClick="demoteUser('<%= user.username %>')">
-        <%= buttonText2 %>
+    <button class="btn btn-info btn-lg btn-rounded" type="submit"
+      style="margin: 2%; font-size:14px; padding:2%; height: 40px" onClick="demoteUser('<%= user.username %>')">
+      <%= buttonText2 %>
     </button>
 
-</li>
+  </div>
+</div>
+
+
 
 <script>
-function promoteUser(username) {
-//   console.log('start');
-  const formData = new URLSearchParams();
-  formData.append('username', username);
-  formData.append('userType', 'admin');
+  function promoteUser(username) {
+    //   console.log('start');
+    const formData = new URLSearchParams();
+    formData.append('username', username);
+    formData.append('userType', 'admin');
 
-  fetch('/updateUserType', {
-    method: 'POST',
-    body: formData
-  })
-}
+    fetch('/updateUserType', {
+      method: 'POST',
+      body: formData
+    })
+  }
 
-function demoteUser(username) {
-//   console.log('start');
-  const formData = new URLSearchParams();
-  formData.append('username', username);
-  formData.append('userType', 'user');
+  function demoteUser(username) {
+    //   console.log('start');
+    const formData = new URLSearchParams();
+    formData.append('username', username);
+    formData.append('userType', 'user');
 
-  fetch('/updateUserType', {
-    method: 'POST',
-    body: formData
-  })
-}
+    fetch('/updateUserType', {
+      method: 'POST',
+      body: formData
+    })
+  }
 
 </script>
-  
