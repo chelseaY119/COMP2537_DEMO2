@@ -315,7 +315,8 @@ app.get('/logout', (req, res) => {
 app.get("*", (req, res) => {
     res.status(404);
     res.render("404", {
-        pageTitle: '404'
+        pageTitle: '404',
+        activePage:'404'
     });
 })
 
