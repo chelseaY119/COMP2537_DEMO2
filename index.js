@@ -227,14 +227,14 @@ app.get('/admin', async (req, res) => {
 
     const user = await userCollection.findOne({ username });
 
-    // if(user && user.userType === 'user')  {
-    //     res.render("404", {
-    //         pageTitle: '403',
-    //         activePage: '404'
-    //     });
-    // }
+    if(user && user.userType === 'user')  {
+        res.render("404", {
+            pageTitle: '403',
+            activePage: '404'
+        });
+    }
 
-    //  else {
+     else {
         res.render('admin', {
             req: req,
             // userCollection: userCollection,
@@ -242,11 +242,7 @@ app.get('/admin', async (req, res) => {
             admins: admin,
             activePage: 'admin'
         });
-
-
-
-
-    // };
+    };
 });
 
 app.post('/updateUserType', async (req, res) => {
